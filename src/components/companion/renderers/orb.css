@@ -1,0 +1,134 @@
+/* Orb renderer. Expression (eyes, mouth, tilt) is driven by [data-mood] and is
+   always applied. Looping motion only runs while [data-active] is present, so
+   offscreen, hidden or inactive characters cost nothing to animate. */
+
+.orb {
+  --c-hi: #f1ecff;
+  --c-mid: #b6a1fa;
+  --c-deep: #4f30a6;
+  --c-glow: #8b5cf6;
+  --c-face: #120a24;
+  --c-face-hi: #241640;
+  --c-eye: #ddd2ff;
+  --c-cheek: #f2a7d2;
+  --c-bead: #ece3ff;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  user-select: none;
+}
+.orb[data-style='ember'] {
+  --c-hi: #ffefe9;
+  --c-mid: #f0a3b6;
+  --c-deep: #7f3263;
+  --c-glow: #ec6fa4;
+  --c-face: #1c0b1a;
+  --c-face-hi: #33162d;
+  --c-eye: #ffe0d6;
+  --c-cheek: #ffb48f;
+  --c-bead: #ffe2d6;
+}
+.orb[data-style='tide'] {
+  --c-hi: #eaf2ff;
+  --c-mid: #9cb2fb;
+  --c-deep: #2f43a3;
+  --c-glow: #6d8dfa;
+  --c-face: #0b0f2b;
+  --c-face-hi: #19214d;
+  --c-eye: #d6e6ff;
+  --c-cheek: #b9a8ff;
+  --c-bead: #dceaff;
+}
+
+.orb__svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.orb g,
+.orb rect,
+.orb ellipse,
+.orb path,
+.orb circle { transform-box: fill-box; transform-origin: center; }
+
+/* ----- Paint ----- */
+.orb__shadow { fill: rgba(0, 0, 0, 0.5); }
+.orb__aura { opacity: 0.5; transition: opacity var(--dur-3); }
+.orb__spec { fill: #fff; opacity: 0.28; }
+.orb__spec-dot { fill: #fff; opacity: 0.7; }
+.orb__visor-edge { stroke: #fff; stroke-opacity: 0.1; stroke-width: 1.2; fill: none; }
+.orb__bead { fill: var(--c-bead); filter: drop-shadow(0 0 5px var(--c-glow)); }
+.orb__eye { filter: drop-shadow(0 0 4px var(--c-glow)); transition: transform var(--dur-3) var(--ease-out), opacity var(--dur-2); }
+.orb__eyes { transition: transform var(--dur-3) var(--ease-out), opacity var(--dur-2); }
+.orb__eyes-happy { stroke: var(--c-eye); opacity: 0; transition: opacity var(--dur-2); filter: drop-shadow(0 0 4px var(--c-glow)); }
+.orb__cheek { fill: var(--c-cheek); opacity: 0.18; transition: opacity var(--dur-3); }
+.orb__mouth { stroke: var(--c-eye); fill: none; opacity: 0; transition: opacity var(--dur-2); }
+.orb__mouth--smile { opacity: 0.95; }
+.orb__mouth--talk,
+.orb__mouth--grin { fill: var(--c-eye); stroke: none; }
+.orb__ring { opacity: 0.55; transition: opacity var(--dur-3); }
+.orb__satellite { fill: var(--c-hi); filter: drop-shadow(0 0 4px var(--c-glow)); }
+.orb__body { transition: transform var(--dur-3) var(--ease-out); }
+.orb__thinking circle { fill: var(--c-mid); opacity: 0; transition: opacity var(--dur-2); }
+.orb__waves { stroke: var(--c-mid); opacity: 0; transition: opacity var(--dur-2); }
+.orb__sparkles path { fill: var(--c-hi); opacity: 0; }
+
+/* ----- Expressions (static, always applied) ----- */
+.orb[data-mood='listening'] .orb__body { transform: rotate(-5deg); }
+.orb[data-mood='listening'] .orb__eyes { transform: scaleY(1.12); }
+.orb[data-mood='listening'] .orb__ring,
+.orb[data-mood='listening'] .orb__aura { opacity: 0.85; }
+
+.orb[data-mood='thinking'] .orb__eyes { transform: translate(4px, -5px) scaleY(0.72); }
+.orb[data-mood='thinking'] .orb__mouth--smile { opacity: 0; }
+.orb[data-mood='thinking'] .orb__mouth--flat { opacity: 0.9; }
+.orb[data-mood='thinking'] .orb__thinking circle { opacity: 0.6; }
+
+.orb[data-mood='speaking'] .orb__mouth--smile { opacity: 0; }
+.orb[data-mood='speaking'] .orb__mouth--talk { opacity: 1; transform: scaleY(0.8); }
+.orb[data-mood='speaking'] .orb__waves { opacity: 0.55; }
+.orb[data-mood='speaking'] .orb__aura { opacity: 0.7; }
+
+.orb[data-mood='celebrating'] .orb__eyes { opacity: 0; }
+.orb[data-mood='celebrating'] .orb__eyes-happy { opacity: 1; }
+.orb[data-mood='celebrating'] .orb__mouth--smile { opacity: 0; }
+.orb[data-mood='celebrating'] .orb__mouth--grin { opacity: 1; }
+.orb[data-mood='celebrating'] .orb__cheek { opacity: 0.5; }
+.orb[data-mood='celebrating'] .orb__ring,
+.orb[data-mood='celebrating'] .orb__aura { opacity: 0.95; }
+.orb[data-mood='celebrating'] .orb__sparkles path { opacity: 0.85; }
+
+/* ----- Motion (only while active) ----- */
+.orb--hero[data-active] .orb__float,
+.orb--lg[data-active] .orb__float,
+.orb--md[data-active] .orb__float { animation: orb-float 6s var(--ease-in-out) infinite alternate; }
+.orb--hero[data-active] .orb__shadow,
+.orb--lg[data-active] .orb__shadow,
+.orb--md[data-active] .orb__shadow { animation: orb-shadow 6s var(--ease-in-out) infinite alternate; }
+.orb[data-active][data-mood='idle'] .orb__eyes,
+.orb[data-active][data-mood='speaking'] .orb__eyes { animation: orb-blink 6.5s infinite; }
+
+.orb[data-active][data-mood='listening'] .orb__bead { animation: orb-pulse 1.4s var(--ease-in-out) infinite; }
+
+.orb[data-active][data-mood='thinking'] .orb__thinking circle { animation: orb-dot 1.5s var(--ease-in-out) infinite; }
+.orb[data-active][data-mood='thinking'] .orb__thinking circle:nth-child(2) { animation-delay: 0.2s; }
+.orb[data-active][data-mood='thinking'] .orb__thinking circle:nth-child(3) { animation-delay: 0.4s; }
+.orb[data-active][data-mood='thinking'] .orb__bead { animation: orb-pulse 0.9s var(--ease-in-out) infinite; }
+
+.orb[data-active][data-mood='speaking'] .orb__mouth--talk { animation: orb-talk 0.34s var(--ease-in-out) infinite alternate; }
+.orb[data-active][data-mood='speaking'] .orb__waves path { animation: orb-wave 1s var(--ease-out) infinite; }
+.orb[data-active][data-mood='speaking'] .orb__waves path:nth-child(2) { animation-delay: 0.25s; }
+
+.orb[data-active][data-mood='celebrating'] .orb__body { animation: orb-bounce 0.7s var(--ease-out) 2; }
+.orb[data-active][data-mood='celebrating'] .orb__sparkles path { animation: orb-sparkle 1.2s var(--ease-out) infinite; }
+.orb[data-active][data-mood='celebrating'] .orb__sparkles path:nth-child(2) { animation-delay: 0.3s; }
+.orb[data-active][data-mood='celebrating'] .orb__sparkles path:nth-child(3) { animation-delay: 0.5s; }
+.orb[data-active][data-mood='celebrating'] .orb__sparkles path:nth-child(4) { animation-delay: 0.15s; }
+
+@keyframes orb-float { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+@keyframes orb-shadow { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0.86); opacity: 0.7; } }
+@keyframes orb-blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
+@keyframes orb-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: 0.7; } }
+@keyframes orb-dot { 0%, 100% { opacity: 0.15; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+@keyframes orb-talk { from { transform: scaleY(0.3); } to { transform: scaleY(1.1); } }
+@keyframes orb-wave { from { opacity: 0.9; transform: translateX(0); } to { opacity: 0; transform: translateX(6px); } }
+@keyframes orb-bounce { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px) scale(1.02, 0.98); } }
+@keyframes orb-sparkle { 0% { opacity: 0; transform: scale(0.4); } 40% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(0.6) rotate(30deg); } }
+
+.orb--sm .orb__shadow { display: none; }

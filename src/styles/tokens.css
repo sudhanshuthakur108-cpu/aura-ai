@@ -1,0 +1,149 @@
+/* Design tokens. Every color, size and motion value in the app should come from
+   here. Themes only redefine the surface/text layer; accents stay constant. */
+
+:root {
+  color-scheme: dark;
+
+  /* Palette */
+  --lavender-100: #ede9fe;
+  --lavender-200: #ddd6fe;
+  --lavender-300: #c4b5fd;
+  --violet-400: #a78bfa;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --periwinkle-300: #a5b4fc;
+
+  /* Surfaces — ink (default theme) */
+  --bg: #100c18;
+  --bg-glow: rgba(124, 58, 237, 0.14);
+  --surface-1: #171221;
+  --surface-2: #1d172b;
+  --surface-3: #261e37;
+  --surface-raised: #2c2340;
+  --surface-sunken: #0c0913;
+  --overlay: rgba(8, 6, 13, 0.72);
+
+  /* Lines */
+  --border: rgba(205, 190, 255, 0.09);
+  --border-strong: rgba(205, 190, 255, 0.17);
+  --border-accent: rgba(196, 181, 253, 0.38);
+
+  /* Text */
+  --text-1: #f3effa;
+  --text-2: #c8bfdb;
+  --text-3: #9b91b3;
+  --text-on-accent: #160f24;
+
+  /* Accent roles */
+  --accent: var(--lavender-300);
+  --accent-strong: var(--violet-400);
+  --accent-soft: rgba(167, 139, 250, 0.14);
+  --accent-softer: rgba(167, 139, 250, 0.08);
+
+  /* Status roles (always paired with an icon/label in the UI) */
+  --success: #86e0b4;
+  --success-soft: rgba(134, 224, 180, 0.12);
+  --warning: #f4c87e;
+  --warning-soft: rgba(244, 200, 126, 0.12);
+  --danger: #f6a0ad;
+  --danger-soft: rgba(246, 160, 173, 0.12);
+  --danger-strong: #e76f84;
+  --info: #9ec5ff;
+  --info-soft: rgba(158, 197, 255, 0.12);
+
+  /* Typography */
+  --font-ui: 'Manrope Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.375rem;
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;
+
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 56px;
+  --space-10: 72px;
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 9px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.025) inset, 0 6px 18px -10px rgba(0, 0, 0, 0.55);
+  --shadow-2: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+  --shadow-3: 0 30px 80px -24px rgba(0, 0, 0, 0.8);
+
+  /* Focus */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--lavender-300);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 340ms;
+
+  /* Layout */
+  --sidebar-w: 248px;
+  --rail-w: 76px;
+  --topbar-h: 56px;
+  --content-max: 1240px;
+}
+
+:root[data-theme='plum'] {
+  --bg: #170d1c;
+  --bg-glow: rgba(192, 92, 190, 0.13);
+  --surface-1: #1f1325;
+  --surface-2: #26182e;
+  --surface-3: #31203b;
+  --surface-raised: #382546;
+  --surface-sunken: #120a16;
+  --border: rgba(240, 190, 255, 0.09);
+  --border-strong: rgba(240, 190, 255, 0.17);
+}
+
+:root[data-theme='midnight'] {
+  --bg: #07060b;
+  --bg-glow: rgba(124, 58, 237, 0.08);
+  --surface-1: #0f0d16;
+  --surface-2: #15121e;
+  --surface-3: #1d1928;
+  --surface-raised: #241f32;
+  --surface-sunken: #050408;
+  --border: rgba(205, 190, 255, 0.14);
+  --border-strong: rgba(205, 190, 255, 0.26);
+  --text-2: #d6cfe6;
+  --text-3: #aaa1c0;
+}
+
+/* Reduced motion: honoured from the OS unless the user forces full motion,
+   and always when the user picks "reduced" in Settings. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+  }
+}
+:root[data-motion='reduced'] {
+  --dur-1: 0ms;
+  --dur-2: 0ms;
+  --dur-3: 0ms;
+}

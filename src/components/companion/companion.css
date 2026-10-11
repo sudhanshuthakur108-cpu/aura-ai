@@ -1,0 +1,48 @@
+/* Sizing and fallback for the companion boundary. Renderer styles live next to
+   each renderer (renderers/orb.css). */
+
+.companion { position: relative; flex: none; aspect-ratio: 1; }
+.companion--lg { width: min(100%, 220px); }
+.companion--md { width: 104px; }
+.companion--sm { width: 36px; }
+/* Hero fills its stage; the parent decides how large the stage is. */
+.companion--hero { width: 100%; aspect-ratio: var(--companion-aspect, 1); }
+
+/* ----- 3D stage ----- */
+.companion-3d { position: absolute; inset: 0; }
+.companion-3d__canvas {
+  position: absolute !important;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 480ms var(--ease-out);
+  /* The floor glow reaches the bottom of the frame; fade it out so the canvas edge never shows. */
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+.companion-3d[data-ready] .companion-3d__canvas { opacity: 1; }
+/* 2D avatar shown while three.js loads, then faded out. */
+.companion-3d__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity 360ms var(--ease-out);
+}
+.companion-3d__placeholder > .orb { width: auto; height: 62%; }
+.companion-3d[data-ready] .companion-3d__placeholder { opacity: 0; pointer-events: none; }
+.companion--hero[data-renderer='2d-fallback'] { display: grid; place-items: center; }
+.companion--hero[data-renderer='2d-fallback'] > .orb { width: auto; height: 62%; }
+
+/* ----- Letter fallback (renderer threw) ----- */
+.companion-fallback {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--lavender-200), var(--violet-500) 70%);
+  color: var(--text-on-accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.companion-fallback.companion--hero { width: min(60%, 200px); margin: 0 auto; font-size: 4rem; }
+.companion-fallback.companion--lg { width: min(100%, 180px); font-size: 4rem; }
+.companion-fallback.companion--md { width: 88px; font-size: 2.2rem; }
+.companion-fallback.companion--sm { width: 32px; font-size: 0.95rem; }
